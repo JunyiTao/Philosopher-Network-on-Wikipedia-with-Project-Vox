@@ -1,1 +1,1 @@
-# Philosopher-Network-on-Wikipedia---Project-Vox
+# Philosopher Network on Wikipedia - Project Vox
