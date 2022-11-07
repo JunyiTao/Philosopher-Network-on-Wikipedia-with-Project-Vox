@@ -502,19 +502,24 @@ def add_info_influ_dict(ent_info_list):
     return info_list
 
 # =================== Transform to Graph Data ======================
+# ==================================================================
 
 
 def transform(data, incl_label, list_label, score_label):
-    
+    filename = "graph_"+incl_label.replace(": ","")+"_"+list_label.replace("_","")+"_"+score_label.replace("_","")
+    filename = filename.replace("__","_full_")
+
     data = prep_data(data, list_label, incl_label) # Transform into multiple datasets with different links
     node_map = build_node_map(data)
-
     graph = build_graph(data, node_map) # build graph
+    # save graph
+    pickle.dump( graph, open( "graph_data/graph_built/"+ filename +".p", "wb" ) )
+
     scores = node_metrics(graph, score_label) # calc scores
     graph_json = build_graph_json(data, node_map, scores, list_label)
 
     # store
-    filename = "graph_"+incl_label.replace(": ","")+"_"+list_label.replace("_","")+"_"+score_label.replace("_","")
+    
     with open("graph_data/transformed_data/"+filename+".js", "w") as output_file:
         output_file.write('var graph = ')
         json.dump(graph_json, output_file, indent=4)
@@ -779,3 +784,30 @@ def print_recordlink_stats(info_list):
     fig.update_layout(title_text='Influence/InfluencedBy links distribution (1 - 100)')
     fig.update_layout(xaxis_range=[-10,100])
     fig.show()
+
+
+
+
+# ======================================================
+# ================== network analysis ==================
+
+def build_save_graph(data, incl_label, list_label):
+    '''
+    just for build the graph (how the scores are calculated is not important)
+    ''' 
+
+    filename = "graph_"+incl_label.replace(": ","")+"_"+list_label.replace("_","")
+    filename = filename.replace("__","_full_") # for the full list
+
+    data = prep_data(data, list_label, incl_label) # Transform into multiple datasets with different links
+    node_map = build_node_map(data)
+    graph = build_graph(data, node_map) # build graph
+    # save graph
+    pickle.dump( graph, open( "graph_data/graph_built/" + filename +".p", "wb" ) )
+    print("Graph saved:", "graph_data/graph_built/" + filename)
+
+    return graph
+
+
+
+
